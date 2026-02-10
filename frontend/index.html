@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Proof-of-Reserves</title>
+    <style>
+        body { font-family: monospace; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px 0; cursor: pointer; }
+        .output { background: #f4f4f4; padding: 15px; margin: 10px 0; border-left: 4px solid #333; }
+        .success { border-left-color: green; }
+        .step { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <h1>Bitcoin Proof-of-Reserves Demo</h1>
+    <p><strong>Problem:</strong> Prove solvency without revealing wallet addresses or balances.</p>
+
+    <div class="step">
+        <h3>Step 1: Custodian Claims Liability</h3>
+        <label>Claimed Liability (BTC): <input type="number" id="liability" value="2.0" step="0.1"></label>
+        <button onclick="setLiability()">Set Liability</button>
+        <div id="liability-output" class="output" style="display:none;"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 2: Generate Proof (Off-chain)</h3>
+        <p>Private UTXOs: [0.5 BTC, 0.75 BTC, 1.0 BTC] = 2.25 BTC total</p>
+        <button onclick="generateProof()">Generate Proof</button>
+        <div id="proof-output" class="output" style="display:none;"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 3: Submit to Starknet</h3>
+        <button onclick="submitProof()">Submit Proof to Contract</button>
+        <div id="submit-output" class="output" style="display:none;"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 4: Verify Status</h3>
+        <button onclick="checkStatus()">Check Verification Status</button>
+        <div id="status-output" class="output" style="display:none;"></div>
+    </div>
+
+    <script>
+        let liability = 2.0;
+        let proof = null;
+
+        function setLiability() {
+            liability = parseFloat(document.getElementById('liability').value);
+            const output = document.getElementById('liability-output');
+            output.style.display = 'block';
+            output.innerHTML = `✓ Liability set: ${liability} BTC (${liability * 1e8} satoshis)`;
+        }
+
+        function generateProof() {
+            // Simulate proof generation
+            const utxos = [0.5, 0.75, 1.0];
+            const sum = utxos.reduce((a, b) => a + b, 0);
+            
+            if (sum < liability) {
+                alert('Insufficient reserves!');
+                return;
+            }
+
+            proof = {
+                claimed_liability: Math.floor(liability * 1e8),
+                utxo_sum: Math.floor(sum * 1e8),
+                proof_hash: '0x' + Array(16).fill(0).map(() => 
+                    Math.floor(Math.random() * 16).toString(16)).join(''),
+                utxo_count: utxos.length
+            };
+
+            const output = document.getElementById('proof-output');
+            output.style.display = 'block';
+            output.className = 'output success';
+            output.innerHTML = `
+                ✓ Proof Generated<br>
+                Liability: ${proof.claimed_liability} sats<br>
+                UTXO Sum: ${proof.utxo_sum} sats<br>
+                Proof Hash: ${proof.proof_hash}<br>
+                Status: <strong>Solvent</strong>
+            `;
+        }
+
+        function submitProof() {
+            if (!proof) {
+                alert('Generate proof first!');
+                return;
+            }
+
+            // Simulate contract submission
+            const output = document.getElementById('submit-output');
+            output.style.display = 'block';
+            output.className = 'output success';
+            output.innerHTML = `
+                ✓ Proof Submitted to Starknet<br>
+                Contract: ProofOfReserves<br>
+                Custodian: 0xABC...DEF<br>
+                Transaction: 0x${Math.random().toString(16).slice(2, 18)}...<br>
+                Block: ${Math.floor(Math.random() * 100000)}
+            `;
+        }
+
+        function checkStatus() {
+            if (!proof) {
+                alert('Submit proof first!');
+                return;
+            }
+
+            const output = document.getElementById('status-output');
+            output.style.display = 'block';
+            output.className = 'output success';
+            output.innerHTML = `
+                <strong>Verification Status: ✓ VERIFIED</strong><br>
+                Custodian: 0xABC...DEF<br>
+                Claimed Liability: ${proof.claimed_liability} sats<br>
+                Timestamp: ${new Date().toISOString()}<br>
+                <br>
+                <em>Anyone can query this status on-chain.</em>
+            `;
+        }
+    </script>
+</body>
+</html>
