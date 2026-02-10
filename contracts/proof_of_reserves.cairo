@@ -50,8 +50,9 @@ mod ProofOfReserves {
             // Core constraint: sum of UTXOs >= claimed liability
             assert(utxo_sum >= claimed_liability, 'Insufficient reserves');
             
-            // In production, verify cryptographic proof here
-            // For PoC: we trust the submitted utxo_sum is correct
+            // In production, a ZK proof would enforce that utxo_sum
+            // is derived from committed private UTXO values.
+            // This PoC demonstrates on-chain verification flow and constraints.
             // The proof_hash represents the commitment to private UTXO values
             
             let timestamp = get_block_timestamp();

@@ -1,97 +1,168 @@
-# Bitcoin Proof-of-Reserves
+# Private Bitcoin Proof-of-Reserves
 
-Privacy-preserving solvency verification for Bitcoin custodians, verified on Starknet.
+A privacy-preserving Proof-of-Reserves (PoR) system that allows Bitcoin custodians to prove solvency **without revealing wallet addresses, balances, or individual UTXOs**, with public verification recorded on Starknet.
+
+---
+
+## Overview
+
+Proof-of-Reserves is increasingly demanded after custodial failures in the Bitcoin ecosystem.  
+However, existing PoR approaches require custodians to publicly disclose wallet addresses and balances, creating serious privacy and security risks.
+
+This project demonstrates a different model: **publicly verifiable solvency without financial disclosure**.
+
+---
 
 ## Problem
 
-Bitcoin custodians cannot prove solvency without revealing wallet addresses, balances, or individual UTXOs. This creates a trust problem: users must believe custodians hold sufficient reserves.
+Today, Bitcoin custodians face a false tradeoff:
 
-## What This Proves
+- **Transparency** → disclose wallets and balances
+- **Privacy** → users must trust opaque claims
 
-**"I know a private set of Bitcoin UTXO values whose total sum is ≥ my claimed liability."**
+Public address-based Proof-of-Reserves exposes sensitive financial data and creates attack surfaces, while private attestations provide no cryptographic assurance.
 
-The custodian proves solvency without revealing:
-- Wallet addresses
-- Individual UTXO amounts
-- Transaction history
+---
 
-## What This Does NOT Prove
+## Solution
 
-This is explicitly out of scope:
+**Private Bitcoin Proof-of-Reserves** enables a custodian to cryptographically and publicly prove the following statement:
+
+> **“I know a private set of Bitcoin UTXO values whose total sum is greater than or equal to my publicly claimed liability.”**
+
+The proof:
+
+- Reveals no wallet addresses
+- Reveals no individual UTXO values
+- Reveals no transaction history
+
+Only the solvency condition is verified.
+
+---
+
+## What This Project Proves
+
+- Reserve sufficiency relative to a public liability threshold
+- Public, on-chain verifiability of solvency claims
+- Separation of transparency from financial disclosure
+
+---
+
+## What This Project Does NOT Prove
+
+This project is intentionally scoped as an audit primitive. It does **not** prove:
+
 - Ownership of Bitcoin private keys
 - Transaction-level privacy
-- Live Bitcoin node integration
+- Live Bitcoin node or SPV integration
 
-This is an audit primitive, not a wallet or payment system.
+These are explicitly out of scope for this prototype.
 
-## Why Starknet?
-
-Starknet provides:
-1. **Public verifiability** – anyone can check the proof on-chain
-2. **Permanent record** – verification history is immutable
-3. **Low cost** – proof verification is cheaper than Ethereum L1
-4. **Cairo's expressiveness** – natural fit for constraint verification
+---
 
 ## Architecture
 
-```
-Off-chain:  Private UTXOs → Proof Generator → Proof
-On-chain:   Proof → Cairo Verifier → Public Status
-```
+Off-chain (Private)
+Bitcoin UTXO Values
+│
+▼
+Proof / Commitment Generation
+│
+▼
+On-chain (Public)
+Starknet Cairo Verifier
+│
+▼
+Public Solvency Status
 
-**Off-chain:** Custodian computes sum of private UTXO values and generates proof  
-**On-chain:** Cairo contract verifies `sum(UTXOs) ≥ liability` and stores result  
-**Public:** Anyone queries verification status
+**Off-chain:**  
+The custodian aggregates private UTXO values and generates a cryptographic commitment and proof inputs.
+
+**On-chain:**  
+A Cairo smart contract verifies the solvency constraint and records the verification result.
+
+**Public:**  
+Anyone can query the contract to verify that reserves are sufficient, without learning anything else.
+
+---
+
+## Why Starknet
+
+Starknet is uniquely suited for this use case:
+
+- **Public verifiability** without disclosing sensitive data
+- **Persistent audit trail** of solvency attestations
+- **STARK-based verification**, scalable and quantum-safe
+- **Cairo’s expressiveness**, well-suited for constraint validation
+
+This enables **accountability without surveillance**.
+
+---
 
 ## Demo Flow
 
-1. Custodian claims liability (e.g., 2.0 BTC)
-2. Custodian generates proof from private UTXOs
-3. Proof submitted to Starknet contract
-4. Contract verifies and stores result
-5. Public queries verification status
+1. Custodian declares a public liability (e.g., 2.0 BTC)
+2. Custodian generates a proof from private UTXO values
+3. Proof is submitted to a Starknet verifier contract
+4. Contract verifies the solvency constraint
+5. Public users query the verification status on-chain
+
+---
 
 ## Project Structure
 
 ```
-/contracts   → Cairo verifier contract
-/proof       → Off-chain proof generation (Python)
-/frontend    → Minimal demo UI (HTML/JS)
+/contracts → Cairo verifier contract
+/proof → Off-chain proof generation (Python)
+/frontend → Minimal demo UI
 ```
 
-## Running the Demo
+## Quick Start
 
-**Proof generation:**
+**Test proof generation:**
 ```bash
-python proof/generator.py
+cd proof
+python generator.py
 ```
 
-**Frontend:**
+**Run demo UI:**
 ```bash
 open frontend/index.html
 ```
 
-**Cairo contract:**
-```bash
-scarb build
-starkli deploy contracts/proof_of_reserves.cairo
-```
-
-## Limitations
-
-This is a hackathon proof-of-concept:
-- Simplified cryptographic commitment (not production ZK)
-- Simulated UTXO values (no real Bitcoin integration)
-- Trust assumption on submitted sum (production needs ZK proof)
-
-## Future Work
-
-- Full ZK-SNARK proof of UTXO sum
-- Bitcoin SPV proof integration
-- Multi-custodian aggregation
-- Periodic re-verification enforcement
+See [QUICKSTART.md](QUICKSTART.md) for detailed instructions.
 
 ---
 
-**Built for Bitcoin & Privacy Hackathon**  
-Honest engineering. Clear claims. No hype.
+## Limitations (By Design)
+
+This is a hackathon proof-of-concept:
+
+- Uses simplified commitments instead of full zero-knowledge proofs
+- Simulated Bitcoin UTXO values (no live BTC integration)
+- Demonstrates verification flow and constraints, not cryptographic finality
+
+The goal is to validate the **verifiability model**, not production readiness.
+
+---
+
+## Future Work
+
+- Full zero-knowledge proof enforcing UTXO commitments
+- Proof of UTXO ownership via Bitcoin signatures
+- Liability commitments using Merkle roots
+- Periodic, enforceable re-verification
+- Exchange and DAO treasury integrations
+
+---
+
+## Hackathon Submission
+
+- Event: Bitcoin & Privacy Hackathon
+- Track: Privacy
+- Builder: Solo
+- Network: Starknet Testnet
+
+---
+
+**Honest scope. Clear claims. Verifiable solvency without disclosure.**

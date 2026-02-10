@@ -87,7 +87,7 @@ def demo_proof_generation():
     print(f"  Liability: {proof['claimed_liability']}")
     print(f"  UTXO Sum: {proof['utxo_sum']}")
     print(f"  Proof Hash: {proof['proof_hash'][:16]}...")
-    print(f"  Status: ✓ Solvent\n")
+    print(f"  Status: [SOLVENT]\n")
     
     return proof
 
