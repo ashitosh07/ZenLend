@@ -123,8 +123,8 @@ deploy_lending() {
     
     PUSD_ADDRESS=$(cat .pusd_address)
     
-    # Use testnet WBTC address (mock for demo)
-    WBTC_ADDRESS="0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"
+    # Use testnet strkBTC address (mock for demo)
+    STRKBTC_ADDRESS="0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"
     
     # Declare lending contract
     LENDING_CLASS_HASH=$(starkli declare target/dev/zenlend_private_btc_lending_private_btc_lending.sierra.json \
@@ -142,7 +142,7 @@ deploy_lending() {
     # Deploy lending instance
     LENDING_ADDRESS=$(starkli deploy $LENDING_CLASS_HASH \
         $PUSD_ADDRESS \
-        $WBTC_ADDRESS \
+        $STRKBTC_ADDRESS \
         --account $ACCOUNT_FILE \
         --rpc $RPC_URL | grep "Contract deployed" | awk '{print $3}')
     
@@ -200,13 +200,13 @@ generate_summary() {
 
 ## Frontend Configuration
 
-Update \`frontend/zenlend.html\` with these addresses:
+Update your React app's contract configuration with these addresses:
 
 \`\`\`javascript
 const CONTRACTS = {
     LENDING: "$LENDING_ADDRESS",
     PUSD: "$PUSD_ADDRESS",
-    WBTC: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"
+    STRKBTC: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"
 };
 \`\`\`
 

@@ -8,10 +8,6 @@ starknet = ">=2.4.0"
 openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", tag = "v0.10.0" }
 
 [[target.starknet-contract]]
-sierra = true
-casm = true
-
-[[target.starknet-contract]]
 name = "private_btc_lending"
 sierra = true
 casm = true

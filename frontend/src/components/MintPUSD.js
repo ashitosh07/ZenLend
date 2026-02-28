@@ -77,7 +77,7 @@ const MintPUSD = ({ userPUSDBalance, onMintSuccess }) => {
             <span>Required collateral:</span>
             <span>
               {amount ? (parseFloat(amount) * 1.5 * 0.00001).toFixed(8) : '0'}{' '}
-              BTC
+              strkBTC
             </span>
           </div>
         </div>

@@ -145,10 +145,10 @@ mod PrivateBTCLending {
     fn constructor(
         ref self: ContractState,
         pusd_token_address: ContractAddress,
-        wbtc_token_address: ContractAddress
+        strkbtc_token_address: ContractAddress
     ) {
         self.pusd_token.write(pusd_token_address);
-        self.wbtc_token.write(wbtc_token_address);
+        self.strkbtc_token.write(strkbtc_token_address);
         self.liquidation_threshold.write(120); // 120%
         self.liquidation_bonus.write(5);       // 5%
     }
@@ -168,9 +168,9 @@ mod PrivateBTCLending {
             // In production: verify zero-knowledge proof that user owns the committed amount
             assert(commitment != 0, 'Invalid commitment');
             
-            // Transfer WBTC from user (this proves ownership)
-            let wbtc = IERC20Dispatcher { contract_address: self.wbtc_token.read() };
-            wbtc.transfer_from(caller, starknet::get_contract_address(), amount_hint.into());
+            // Transfer strkBTC from user (this proves ownership)
+            let strkbtc = IERC20Dispatcher { contract_address: self.strkbtc_token.read() };
+            strkbtc.transfer_from(caller, starknet::get_contract_address(), amount_hint.into());
             
             // Store the commitment
             self.commitments.write(caller, commitment);
@@ -204,9 +204,9 @@ mod PrivateBTCLending {
             // In production: verify ZK proof that commitment opens to >= amount
             assert(opening_proof.len() > 0, 'Invalid opening proof');
             
-            // Transfer WBTC back to user
-            let wbtc = IERC20Dispatcher { contract_address: self.wbtc_token.read() };
-            wbtc.transfer(caller, amount.into());
+            // Transfer strkBTC back to user
+            let strkbtc = IERC20Dispatcher { contract_address: self.strkbtc_token.read() };
+            strkbtc.transfer(caller, amount.into());
             
             // Update protocol stats
             self.total_committed_collateral.write(
@@ -315,8 +315,8 @@ mod PrivateBTCLending {
             pusd.transfer_from(caller, starknet::get_contract_address(), borrower_debt.into());
             
             // Transfer collateral to liquidator
-            let wbtc = IERC20Dispatcher { contract_address: self.wbtc_token.read() };
-            wbtc.transfer(caller, collateral_to_seize.into());
+            let strkbtc = IERC20Dispatcher { contract_address: self.strkbtc_token.read() };
+            strkbtc.transfer(caller, collateral_to_seize.into());
             
             // Clear borrower position
             self.debt_amounts.write(borrower, 0);
