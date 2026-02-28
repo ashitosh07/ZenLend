@@ -1,136 +1,107 @@
-/* BTC Price Header */
-.btc-price-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #f7931a 0%, #ff9800 100%);
-  color: white;
-  padding: 15px 20px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 15px rgba(247, 147, 26, 0.2);
+/* Protocol Stats */
+.stats-section {
+  margin-bottom: 28px;
 }
 
-.btc-price-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.btc-symbol {
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
-.price-data {
-  display: flex;
-  flex-direction: column;
-}
-
-.btc-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.price-change {
-  font-size: 0.85rem;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-.price-positive {
-  color: #4caf50;
-}
-
-.price-negative {
-  color: #f44336;
-}
-
-.price-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  opacity: 0.9;
-}
-
-.live-dot {
-  width: 8px;
-  height: 8px;
-  background: #4caf50;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Protocol Statistics Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
 .stat-card {
-  background: rgba(42, 157, 143, 0.1);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 20px;
-  text-align: center;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.2s,
+    transform 0.2s;
 }
-
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(42, 157, 143, 0.15);
+}
+
+.stat-icon {
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.stat-card.stat-orange .stat-icon {
+  background: var(--btc-orange-dim);
+}
+.stat-card.stat-purple .stat-icon {
+  background: var(--purple-dim);
+}
+.stat-card.stat-green .stat-icon {
+  background: var(--green-dim);
+}
+.stat-card.stat-yellow .stat-icon {
+  background: rgba(245, 158, 11, 0.15);
+}
+.stat-card.stat-red .stat-icon {
+  background: var(--red-dim);
+}
+
+.stat-card.stat-orange {
+  border-color: rgba(247, 147, 26, 0.2);
+}
+.stat-card.stat-purple {
+  border-color: rgba(139, 92, 246, 0.2);
+}
+.stat-card.stat-green {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.stat-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 5px;
+  color: var(--text-1);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-top: 3px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .btc-price-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
+.stat-sub {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
 
+@media (max-width: 900px) {
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .stat-card {
-    padding: 15px;
+}
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
   }
-
   .stat-value {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 }

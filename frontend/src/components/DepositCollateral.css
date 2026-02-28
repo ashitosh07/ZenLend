@@ -1,114 +1,116 @@
-.deposit-form {
-  background: rgba(42, 157, 143, 0.05);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 30px;
+/* Deposit form card */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
-.deposit-form h3 {
-  color: var(--primary-color);
-  margin-bottom: 20px;
-  font-size: 1.5rem;
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.card-icon {
+  font-size: 1.4rem;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--btc-orange-dim);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-primary);
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #252429;
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+.card-sub {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  margin: 2px 0 0;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.1);
+/* Input with inline tag */
+.input-with-tag {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.form-note {
-  display: block;
-  margin-top: 5px;
-  color: var(--text-secondary);
+.input-with-tag input {
+  padding-right: 68px;
+}
+
+.input-tag {
+  position: absolute;
+  right: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--btc-orange);
+  pointer-events: none;
+  background: var(--btc-orange-dim);
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+/* Error / success */
+.form-error {
+  background: var(--red-dim);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--red);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
   font-size: 0.85rem;
-  font-style: italic;
+  margin-bottom: 16px;
 }
 
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.form-success {
+  background: var(--green-dim);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--green);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
 }
 
-.btn-primary {
-  background: var(--primary-color);
-  color: #1a1a1a;
+/* ZK proof badge */
+.proof-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--green-dim);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 16px;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: #33c4a3;
-  transform: translateY(-2px);
+.proof-check {
+  font-size: 1.1rem;
+  color: var(--green);
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+.proof-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--green);
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .deposit-form {
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  .deposit-form h3 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .deposit-form {
-    padding: 15px;
-  }
-
-  .deposit-form h3 {
-    font-size: 1.2rem;
-  }
-
-  .form-note {
-    font-size: 0.8rem;
-  }
+.proof-hash {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-top: 2px;
 }

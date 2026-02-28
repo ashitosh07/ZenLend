@@ -6,8 +6,6 @@ import ProtocolStats from './components/ProtocolStats'
 import DepositCollateral from './components/DepositCollateral'
 import MintPUSD from './components/MintPUSD'
 import UserPosition from './components/UserPosition'
-import Analytics from './components/Analytics'
-import PrivateGovernance from './components/PrivateGovernance'
 import { useWallet } from './hooks/useWallet'
 import { useProtocol } from './hooks/useProtocol'
 
@@ -15,7 +13,6 @@ function App() {
   const wallet = useWallet()
   const protocol = useProtocol()
 
-  // Fetch user data when wallet connects
   useEffect(() => {
     if (wallet.isConnected && wallet.walletAddress) {
       protocol.fetchUserPosition(wallet.walletAddress)
@@ -26,66 +23,52 @@ function App() {
 
   return (
     <div className='app'>
-      <div className='container'>
-        <Header />
+      <Header
+        walletConnected={wallet.isConnected}
+        userAddress={wallet.walletAddress}
+        isConnecting={wallet.isConnecting}
+        isDemoMode={wallet.isDemoMode}
+        onConnect={wallet.connectWallet}
+        onDisconnect={wallet.disconnectWallet}
+        onToggleMode={wallet.toggleMode}
+        btcPrice={protocol.stats?.btcPrice}
+        priceChange={protocol.stats?.priceChange24h}
+      />
 
-        <WalletSection
-          walletConnected={wallet.isConnected}
-          userAddress={wallet.walletAddress}
-          isConnecting={wallet.isConnecting}
-          isDemoMode={wallet.isDemoMode}
-          onConnect={wallet.connectWallet}
-          onDisconnect={wallet.disconnectWallet}
-          onToggleMode={wallet.toggleMode}
-        />
+      <main className='main'>
+        <div className='container'>
+          <ProtocolStats stats={protocol.stats} />
 
-        <ProtocolStats stats={protocol.stats} />
-
-        <Analytics />
-        <PrivateGovernance />
-
-        {wallet.isConnected && (
-          <div className='user-section'>
-            {protocol.userPosition.hasPosition && (
-              <UserPosition position={protocol.userPosition} />
-            )}
-
-            <div className='card-grid'>
-              <DepositCollateral
-                onDepositSuccess={protocol.updateAfterDeposit}
-              />
-
-              <MintPUSD
-                userPUSDBalance={protocol.userPUSDBalance}
-                onMintSuccess={protocol.updateAfterMint}
-              />
+          {wallet.isConnected ? (
+            <div className='dashboard'>
+              {protocol.userPosition.hasPosition && (
+                <UserPosition
+                  position={protocol.userPosition}
+                  onRepay={protocol.repayDebt}
+                />
+              )}
+              <div className='action-grid'>
+                <div id='deposit-section'>
+                  <DepositCollateral
+                    onDepositSuccess={protocol.updateAfterDeposit}
+                  />
+                </div>
+                <MintPUSD
+                  userPUSDBalance={protocol.userPUSDBalance}
+                  onMintSuccess={protocol.updateAfterMint}
+                />
+              </div>
             </div>
-          </div>
-        )}
-
-        {!wallet.isConnected && (
-          <div className='welcome-section'>
-            <div className='welcome-card'>
-              <h2>Welcome to ZenLend</h2>
-              <p>
-                The first private Bitcoin lending protocol on Starknet. Built
-                for the strkBTC era — borrow against your Bitcoin without
-                revealing collateral amounts.
-              </p>
-              <ul className='feature-list'>
-                <li>₿ strkBTC collateral with privacy-by-default</li>
-                <li>🔒 Zero-knowledge proof verification</li>
-                <li>🏦 Mint PrivateUSD (PUSD) stablecoin</li>
-                <li>⚡ Cairo-native liquidation engine</li>
-                <li>🔑 Viewing key compatible for compliance</li>
-              </ul>
-              <p className='connect-prompt'>
-                Connect your Starknet wallet to get started
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
+          ) : (
+            <WalletSection
+              isDemoMode={wallet.isDemoMode}
+              isConnecting={wallet.isConnecting}
+              onConnect={wallet.connectWallet}
+              onToggleMode={wallet.toggleMode}
+            />
+          )}
+        </div>
+      </main>
     </div>
   )
 }

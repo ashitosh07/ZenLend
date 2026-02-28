@@ -1,69 +1,170 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './UserPosition.css'
 
-const UserPosition = ({ position }) => {
-  const collateralRatio =
-    (position.collateralValue / (position.mintedAmount * 1.5)) * 100
-  const healthFactor = collateralRatio / 150 // 150% is minimum ratio
+const UserPosition = ({ position, onRepay }) => {
+  const [repaying, setRepaying] = useState(false)
+  const [repayAmount, setRepayAmount] = useState('')
+  const [repayMsg, setRepayMsg] = useState('')
 
-  const getHealthStatus = () => {
-    if (healthFactor >= 1.5) return { status: 'safe', color: '#2ecc71' }
-    if (healthFactor >= 1.2) return { status: 'warning', color: '#f39c12' }
-    if (healthFactor >= 1.0) return { status: 'danger', color: '#e74c3c' }
-    return { status: 'liquidation', color: '#c0392b' }
+  // Correct formula: collateralValue / mintedAmount * 100
+  const collateralRatio =
+    position.mintedAmount > 0
+      ? (position.collateralValue / position.mintedAmount) * 100
+      : 999
+
+  const healthFactor = collateralRatio / 150
+
+  const health =
+    healthFactor >= 1.5
+      ? { label: 'Healthy', cls: 'safe', color: '#10B981', pct: 100 }
+      : healthFactor >= 1.2
+        ? { label: 'Warning', cls: 'warn', color: '#F59E0B', pct: 65 }
+        : { label: 'At Risk', cls: 'danger', color: '#EF4444', pct: 30 }
+
+  const liqPrice =
+    position.mintedAmount > 0
+      ? (position.mintedAmount * 1.5) / (position.collateralBTC || 1)
+      : 0
+
+  const handleAddCollateral = () => {
+    document
+      .getElementById('deposit-section')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const health = getHealthStatus()
+  const handleRepayConfirm = () => {
+    const amt = parseFloat(repayAmount)
+    if (!amt || amt <= 0) return
+    onRepay && onRepay(Math.min(amt, position.mintedAmount))
+    setRepayMsg(
+      `Repaid ${Math.min(amt, position.mintedAmount).toFixed(2)} PUSD successfully.`,
+    )
+    setRepaying(false)
+    setRepayAmount('')
+    setTimeout(() => setRepayMsg(''), 4000)
+  }
 
   return (
-    <div className='position-card'>
-      <div className='position-header'>
-        <h3>Your Position</h3>
-        <div className={`health-indicator ${health.status}`}>
-          <span
-            className='health-dot'
-            style={{ backgroundColor: health.color }}
-          ></span>
-          {health.status.charAt(0).toUpperCase() + health.status.slice(1)}
+    <div className='card position-card'>
+      <div className='card-header'>
+        <div className='card-title-group'>
+          <span className='card-icon'>📊</span>
+          <div>
+            <h3 className='card-title'>Your Position</h3>
+            <p className='card-sub'>Open lending position</p>
+          </div>
         </div>
+        <span className={`health-badge health-${health.cls}`}>
+          {health.label}
+        </span>
       </div>
 
-      <div className='position-stats'>
-        <div className='position-row'>
-          <span>Collateral Value:</span>
-          <span className='value'>${position.collateralValue.toFixed(2)}</span>
-        </div>
-        <div className='position-row'>
-          <span>PUSD Minted:</span>
-          <span className='value'>{position.mintedAmount.toFixed(2)} PUSD</span>
-        </div>
-        <div className='position-row'>
-          <span>Collateral Ratio:</span>
-          <span className='value' style={{ color: health.color }}>
-            {collateralRatio.toFixed(1)}%
-          </span>
-        </div>
-        <div className='position-row'>
-          <span>Health Factor:</span>
-          <span className='value' style={{ color: health.color }}>
+      <div className='divider' />
+
+      {/* Health bar */}
+      <div className='health-bar-section'>
+        <div className='health-bar-labels'>
+          <span>Health Factor</span>
+          <span style={{ color: health.color }} className='health-factor-val'>
             {healthFactor.toFixed(2)}
           </span>
         </div>
+        <div className='health-bar-track'>
+          <div
+            className={`health-bar-fill fill-${health.cls}`}
+            style={{ width: `${Math.min(health.pct, 100)}%` }}
+          />
+        </div>
       </div>
 
-      {healthFactor < 1.5 && (
-        <div className='position-warning'>
-          <p>
-            {healthFactor < 1.0
-              ? '⚠️ Your position is at risk of liquidation!'
-              : '⚠️ Your position health is low. Consider adding more collateral.'}
-          </p>
+      {/* Stats */}
+      <div className='position-stats'>
+        <div className='pos-stat'>
+          <span className='pos-label'>Collateral Value</span>
+          <span className='pos-value'>
+            $
+            {position.collateralValue?.toLocaleString('en-US', {
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        </div>
+        <div className='pos-stat'>
+          <span className='pos-label'>PUSD Minted</span>
+          <span className='pos-value'>
+            {position.mintedAmount?.toFixed(2)} PUSD
+          </span>
+        </div>
+        <div className='pos-stat'>
+          <span className='pos-label'>Collateral Ratio</span>
+          <span className='pos-value' style={{ color: health.color }}>
+            {collateralRatio > 900 ? '∞' : `${collateralRatio.toFixed(0)}%`}
+          </span>
+        </div>
+        <div className='pos-stat'>
+          <span className='pos-label'>Liquidation Price</span>
+          <span className='pos-value'>
+            {liqPrice > 0
+              ? `$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(liqPrice)}`
+              : '—'}
+          </span>
+        </div>
+      </div>
+
+      {health.cls !== 'safe' && (
+        <div className={`pos-alert alert-${health.cls}`}>
+          {health.cls === 'danger'
+            ? '⚠️ Your position is close to liquidation. Add collateral now.'
+            : '⚠️ Health is low. Consider adding more strkBTC collateral.'}
+        </div>
+      )}
+
+      {repayMsg && (
+        <div className='pos-alert alert-safe' style={{ marginTop: 0 }}>
+          ✅ {repayMsg}
+        </div>
+      )}
+
+      {repaying && (
+        <div className='repay-panel'>
+          <div className='form-group' style={{ marginBottom: '0.75rem' }}>
+            <label className='form-label'>Amount to repay (PUSD)</label>
+            <input
+              type='number'
+              className='form-input'
+              placeholder={`Max ${position.mintedAmount?.toFixed(2)}`}
+              value={repayAmount}
+              onChange={(e) => setRepayAmount(e.target.value)}
+              min='0'
+              max={position.mintedAmount}
+            />
+          </div>
+          <div className='repay-actions'>
+            <button className='btn btn-primary' onClick={handleRepayConfirm}>
+              Confirm Repay
+            </button>
+            <button
+              className='btn btn-secondary'
+              onClick={() => {
+                setRepaying(false)
+                setRepayAmount('')
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
       <div className='position-actions'>
-        <button className='btn btn-secondary'>Add Collateral</button>
-        <button className='btn btn-outline'>Repay PUSD</button>
+        <button className='btn btn-secondary' onClick={handleAddCollateral}>
+          Add Collateral
+        </button>
+        <button
+          className='btn btn-outline'
+          onClick={() => setRepaying((v) => !v)}
+        >
+          Repay PUSD
+        </button>
       </div>
     </div>
   )

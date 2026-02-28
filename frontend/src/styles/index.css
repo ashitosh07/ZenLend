@@ -1,26 +1,26 @@
-:root {
-  --primary-color: #f4a261;
-  --secondary-color: #e76f51;
-  --background-color: #264653;
-  --surface-color: #2a9d8f;
-  --text-primary: #ffffff;
-  --text-secondary: #f1faee;
-  --border-color: #457b9d;
-  --success-color: #06d6a0;
-  --error-color: #ef476f;
-  --warning-color: #ffc947;
+/* Global baseline — design tokens are set in App.css :root */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+html {
+  scroll-behavior: smooth;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+::selection {
+  background: rgba(247, 147, 26, 0.3);
+  color: #fff;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, var(--background-color), #1a4c52);
-  color: var(--text-primary);
-  min-height: 100vh;
-  line-height: 1.6;
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }

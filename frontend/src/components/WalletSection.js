@@ -1,67 +1,83 @@
 import React from 'react'
 import './WalletSection.css'
 
+const FEATURES = [
+  {
+    icon: '🔒',
+    title: 'Private Collateral',
+    desc: 'Deposit strkBTC without revealing your balance on-chain',
+  },
+  {
+    icon: '⚡',
+    title: 'Zero-Knowledge Proofs',
+    desc: 'Pedersen commitments verify ownership without exposure',
+  },
+  {
+    icon: '🏦',
+    title: 'Mint PrivateUSD',
+    desc: 'Borrow PUSD stablecoin against shielded collateral',
+  },
+]
+
 const WalletSection = ({
-  walletConnected,
-  userAddress,
-  isConnecting,
   isDemoMode,
+  isConnecting,
   onConnect,
-  onDisconnect,
   onToggleMode,
 }) => {
   return (
-    <div className='wallet-section'>
-      {/* Mode Toggle */}
-      <div className='mode-toggle'>
-        <span className='mode-label'>Mode:</span>
-        <button
-          className={`mode-btn ${isDemoMode ? 'active' : ''}`}
-          onClick={onToggleMode}
-          disabled={isConnecting}
-        >
-          {isDemoMode ? '🎮 Demo' : '🔐 Production'}
-        </button>
-        <span className='mode-description'>
-          {isDemoMode ? 'Mock wallet for testing' : 'Real Starknet wallet'}
-        </span>
-      </div>
+    <div className='hero'>
+      <div className='hero-content'>
+        <div className='hero-badges'>
+          <span className='badge badge-orange'>Built on Starknet</span>
+          <span className='badge badge-purple'>strkBTC Native</span>
+        </div>
+        <h1 className='hero-title'>
+          Private Bitcoin
+          <br />
+          <span className='hero-accent'>Lending Protocol</span>
+        </h1>
+        <p className='hero-sub'>
+          Borrow against your strkBTC without revealing collateral amounts.
+          Powered by zero-knowledge proofs on Starknet.
+        </p>
 
-      {/* Wallet Connection */}
-      <div id='wallet-status'>
-        {!walletConnected ? (
+        <div className='hero-actions'>
           <button
-            className={`btn btn-primary ${isConnecting ? 'loading' : ''}`}
+            className='btn btn-primary hero-btn'
             onClick={onConnect}
             disabled={isConnecting}
           >
             {isConnecting ? (
               <>
-                <span className='spinner'></span>
-                Connecting...
+                <span className='spinner spinner-dark' />
+                Connecting…
               </>
             ) : (
               `Connect ${isDemoMode ? 'Demo' : 'Starknet'} Wallet`
             )}
           </button>
-        ) : (
-          <>
-            <div className='wallet-info'>
-              <div className='privacy-indicator'>
-                {isDemoMode
-                  ? '🎮 Demo Wallet Connected'
-                  : '🔐 Starknet Wallet Connected'}
-              </div>
-              <div className='wallet-address'>
-                {userAddress?.substring(0, 10)}...
-                {userAddress?.substring(userAddress.length - 8)}
-              </div>
+          <button
+            className={`mode-switch ${isDemoMode ? 'is-demo' : ''}`}
+            onClick={onToggleMode}
+          >
+            {isDemoMode
+              ? '🎮 Demo mode — click to switch'
+              : '🔐 Production mode — click for demo'}
+          </button>
+        </div>
+      </div>
+
+      <div className='feature-cards'>
+        {FEATURES.map((f) => (
+          <div className='feature-card' key={f.title}>
+            <div className='feature-icon'>{f.icon}</div>
+            <div>
+              <div className='feature-title'>{f.title}</div>
+              <div className='feature-desc'>{f.desc}</div>
             </div>
-            <button className='btn btn-secondary' onClick={onDisconnect}>
-              Disconnect
-            </button>
-          </>
-        )}
+          </div>
+        ))}
       </div>
     </div>
   )

@@ -5,26 +5,27 @@ const DepositCollateral = ({ onDepositSuccess }) => {
   const [amount, setAmount] = useState('')
   const [privateKey, setPrivateKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [proof, setProof] = useState(null)
+  const [error, setError] = useState('')
 
   const handleDeposit = async (e) => {
     e.preventDefault()
+    setError('')
+    setProof(null)
 
     if (!amount || !privateKey) {
-      alert('Please fill in all fields')
+      setError('Please fill in all fields')
       return
     }
 
     setIsLoading(true)
 
     try {
-      // Call Python backend to generate commitment
       const response = await fetch(
         'http://localhost:5000/generate-commitment',
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: parseFloat(amount),
             private_key: privateKey,
@@ -32,65 +33,97 @@ const DepositCollateral = ({ onDepositSuccess }) => {
         },
       )
 
-      if (!response.ok) {
-        throw new Error('Failed to generate commitment')
-      }
+      if (!response.ok) throw new Error('Commitment generation failed')
 
-      const { commitment, proof } = await response.json()
+      const data = await response.json()
+      setProof(data)
 
-      // TODO: Submit to Starknet contract
-      console.log('Generated commitment:', commitment)
-      console.log('Proof:', proof)
-
-      // Simulate success
       setTimeout(() => {
-        alert('Collateral deposited successfully!')
+        setIsLoading(false)
         setAmount('')
         setPrivateKey('')
-        setIsLoading(false)
-        if (onDepositSuccess) {
-          onDepositSuccess()
-        }
-      }, 2000)
-    } catch (error) {
-      console.error('Error depositing collateral:', error)
-      alert('Error depositing collateral. Please try again.')
+        if (onDepositSuccess) onDepositSuccess()
+      }, 1500)
+    } catch (err) {
+      setError('Failed to generate ZK proof. Is the backend running?')
       setIsLoading(false)
     }
   }
 
   return (
-    <div className='deposit-form'>
-      <h3>Deposit strkBTC Collateral</h3>
+    <div className='card deposit-card'>
+      <div className='card-header'>
+        <div className='card-title-group'>
+          <span className='card-icon'>₿</span>
+          <div>
+            <h3 className='card-title'>Deposit Collateral</h3>
+            <p className='card-sub'>Lock strkBTC to open a position</p>
+          </div>
+        </div>
+        <span className='badge badge-orange'>strkBTC</span>
+      </div>
+
+      <div className='divider' />
+
       <form onSubmit={handleDeposit}>
         <div className='form-group'>
-          <label>strkBTC Amount</label>
-          <input
-            type='number'
-            step='0.00000001'
-            min='0'
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder='Enter strkBTC amount'
-            required
-          />
+          <label>Amount</label>
+          <div className='input-with-tag'>
+            <input
+              type='number'
+              step='0.00000001'
+              min='0'
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder='0.00000000'
+              required
+            />
+            <span className='input-tag'>strkBTC</span>
+          </div>
         </div>
+
         <div className='form-group'>
-          <label>Private Key (for commitment)</label>
+          <label>Private Key</label>
           <input
             type='password'
             value={privateKey}
             onChange={(e) => setPrivateKey(e.target.value)}
-            placeholder='Enter private key for commitment'
+            placeholder='••••••••••••'
             required
           />
-          <small className='form-note'>
-            Used only for generating zero-knowledge proofs of your strkBTC
-            collateral
-          </small>
+          <span className='form-note'>
+            Sent to your local ZK backend to generate a Pedersen commitment —
+            never leaves your machine
+          </span>
         </div>
-        <button type='submit' className='btn btn-primary' disabled={isLoading}>
-          {isLoading ? 'Generating Proof...' : 'Deposit Collateral'}
+
+        {error && <div className='form-error'>{error}</div>}
+
+        {proof && (
+          <div className='proof-badge'>
+            <span className='proof-check'>✓</span>
+            <div>
+              <div className='proof-title'>ZK Commitment Generated</div>
+              <div className='proof-hash'>
+                {proof.commitment?.slice(0, 20)}…
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button
+          type='submit'
+          className='btn btn-primary btn-full'
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className='spinner spinner-dark' />
+              Generating Proof…
+            </>
+          ) : (
+            'Deposit strkBTC'
+          )}
         </button>
       </form>
     </div>

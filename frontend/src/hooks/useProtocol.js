@@ -61,8 +61,8 @@ export const useProtocol = () => {
 
       // TODO: Replace with actual Starknet contract calls
       // Simulated user position data with dynamic strkBTC pricing
-      const mockCollateralBTC = 1.0 // 1 strkBTC deposited
-      const mockDebtUSD = 45000 // $45k PUSD debt
+      const mockCollateralBTC = 1.5 // 1.5 strkBTC deposited
+      const mockDebtUSD = 28000 // $28k PUSD debt → ~360% collateral ratio
 
       const collateralValue = priceService.calculateCollateralValue(
         mockCollateralBTC,
@@ -126,6 +126,21 @@ export const useProtocol = () => {
     [fetchProtocolStats],
   )
 
+  const repayDebt = useCallback((amount) => {
+    const repaid = parseFloat(amount) || 0
+    setUserPosition((prev) => {
+      const newMinted = Math.max(0, prev.mintedAmount - repaid)
+      return {
+        ...prev,
+        mintedAmount: newMinted,
+        hasPosition: newMinted > 0,
+        collateralRatio:
+          newMinted > 0 ? (prev.collateralValue / newMinted) * 100 : 0,
+      }
+    })
+    setUserPUSDBalance((prev) => Math.max(0, prev - repaid))
+  }, [])
+
   // Fetch initial data and start price monitoring
   useEffect(() => {
     fetchProtocolStats()
@@ -155,6 +170,7 @@ export const useProtocol = () => {
     fetchUserBalance,
     updateAfterDeposit,
     updateAfterMint,
+    repayDebt,
     refreshData: fetchProtocolStats,
     btcPrice: stats.btcPrice,
     priceChange24h: stats.priceChange24h,
