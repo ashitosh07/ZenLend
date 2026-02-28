@@ -186,3 +186,7 @@ curl -X POST http://localhost:5000/generate-commitment \
 ---
 
 **Built for Re{define} Hackathon 2026 — Starknet's private Bitcoin era starts now.**
+
+---
+
+**GitHub:** https://github.com/ashitosh07/ZenLend
