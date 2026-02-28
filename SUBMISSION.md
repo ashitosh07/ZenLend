@@ -51,3 +51,8 @@ Deploy to Starknet Sepolia, integrate actual strkBTC token contract address, imp
 ---
 
 ZenLend is not a concept. It is a working protocol built for the moment strkBTC made private Bitcoin lending possible on Starknet.
+
+---
+
+**Starknet Wallet Address (Prize Distribution):**  
+`0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`

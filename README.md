@@ -189,4 +189,5 @@ curl -X POST http://localhost:5000/generate-commitment \
 
 ---
 
-**GitHub:** https://github.com/ashitosh07/ZenLend
+**GitHub:** https://github.com/ashitosh07/ZenLend  
+**Starknet Wallet:** `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
