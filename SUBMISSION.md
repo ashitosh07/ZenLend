@@ -38,15 +38,26 @@ The strkBTC announcement is the inflection point. ZenLend is the first protocol 
 
 ## What Is Working Right Now
 
+- **Live on Starknet Sepolia** — both contracts fully deployed and verified
 - Live frontend with real-time CoinGecko BTC pricing
 - Flask ZK commitment API generating real Pedersen hashes
 - Complete Cairo contract interface for deposit, withdraw, mint, repay, and liquidation
 - Position health monitoring with health factor, liquidation price, and interactive repay
 - Demo wallet + production Argent X / Braavos wallet support
 
+## Deployed Contracts (Starknet Sepolia)
+
+| Contract          | Address                                                             |
+| ----------------- | ------------------------------------------------------------------- |
+| PrivateUSD (PUSD) | `0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611`  |
+| PrivateBTCLending | `0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8` |
+
+RPC: `https://api.cartridge.gg/x/starknet/sepolia`  
+Deployer: `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
+
 ## What's Next
 
-Deploy to Starknet Sepolia, integrate actual strkBTC token contract address, implement client-side commitment generation to remove the local backend dependency entirely, and add viewing key export for compliance use cases.
+Integrate actual strkBTC token contract address, implement client-side commitment generation to remove the local backend dependency entirely, and add viewing key export for compliance use cases.
 
 ---
 

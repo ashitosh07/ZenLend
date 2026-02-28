@@ -189,5 +189,17 @@ curl -X POST http://localhost:5000/generate-commitment \
 
 ---
 
+## Deployed Contracts — Starknet Sepolia
+
+| Contract              | Address                                                             | Explorer                                                                                                             |
+| --------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **PrivateUSD (PUSD)** | `0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611`  | [Voyager](https://sepolia.voyager.online/contract/0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611)  |
+| **PrivateBTCLending** | `0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8` | [Voyager](https://sepolia.voyager.online/contract/0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8) |
+
+**Network:** Starknet Sepolia — RPC: `https://api.cartridge.gg/x/starknet/sepolia`  
+**Deployer:** `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
+
+---
+
 **GitHub:** https://github.com/ashitosh07/ZenLend  
 **Starknet Wallet:** `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`

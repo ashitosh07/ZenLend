@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { priceService } from '../services/priceService'
+import { CONTRACTS, voyagerContract } from '../constants'
+
+// Live Sepolia contract addresses
+export const LENDING_ADDRESS = CONTRACTS.LENDING.address
+export const PUSD_ADDRESS = CONTRACTS.PUSD.address
 
 export const useProtocol = () => {
   const [stats, setStats] = useState({
