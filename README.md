@@ -99,9 +99,9 @@ Flask API  (localhost:5000)
   └─ POST /generate-commitment   Pedersen commitment + nonce + verification data
   └─ GET  /health
 
-Cairo Contracts  (Starknet Sepolia)
-  └─ private_btc_lending.cairo   deposit · withdraw · mint · repay · liquidate
-  └─ private_usd.cairo           PUSD ERC-20 stablecoin
+Cairo Contracts  (Starknet Sepolia — live ✅)
+  └─ PrivateUSD       0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611
+  └─ PrivateBTCLending 0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8
 ```
 
 ---
@@ -126,7 +126,7 @@ zenlend/
 │   │   └── services/               # priceService (CoinGecko)
 │   └── package.json
 ├── Scarb.toml                       # Cairo build config
-├── deploy.sh                        # Starknet deployment script
+├── deploy.html                      # Browser-based Starknet deployment UI (Braavos)
 ├── start-demo.bat / start-demo.sh   # One-click demo launchers
 └── README.md
 ```
