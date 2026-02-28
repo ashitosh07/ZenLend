@@ -1,9 +1,22 @@
 [package]
-name = "bitcoin_proof_of_reserves"
+name = "zenlend_private_btc_lending"
 version = "0.1.0"
 edition = "2023_11"
 
 [dependencies]
 starknet = ">=2.4.0"
+openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", tag = "v0.10.0" }
 
 [[target.starknet-contract]]
+sierra = true
+casm = true
+
+[[target.starknet-contract]]
+name = "private_btc_lending"
+sierra = true
+casm = true
+
+[[target.starknet-contract]]  
+name = "private_usd"
+sierra = true
+casm = true

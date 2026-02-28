@@ -1,0 +1,177 @@
+/* App.css - Main application styles */
+:root {
+  --primary-color: #2a9d8f;
+  --secondary-color: #264653;
+  --accent-color: #e76f51;
+  --background-color: #1a1a1a;
+  --surface-color: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #404040;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --error-color: #e74c3c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.main-content {
+  padding: 20px 0;
+}
+
+.user-section {
+  margin-top: 30px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.welcome-section {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-card {
+  background: rgba(42, 157, 143, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 600px;
+  text-align: center;
+}
+
+.welcome-card h2 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.welcome-card p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  line-height: 1.7;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 30px 0;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feature-list li {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 12px;
+  padding-left: 10px;
+}
+
+.connect-prompt {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
+/* Enhanced responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .welcome-card {
+    padding: 30px 20px;
+  }
+
+  .welcome-card h2 {
+    font-size: 2rem;
+  }
+
+  .main-content {
+    padding: 15px 0;
+  }
+
+  .user-section {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .welcome-card {
+    margin: 0 5px;
+    padding: 20px 15px;
+  }
+
+  .welcome-card h2 {
+    font-size: 1.8rem;
+  }
+
+  .welcome-card p {
+    font-size: 1rem;
+  }
+
+  .feature-list {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .card-grid {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 320px) {
+  .welcome-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .welcome-card {
+    padding: 15px 10px;
+  }
+
+  .feature-list li {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+}

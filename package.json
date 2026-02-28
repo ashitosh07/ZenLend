@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@starknet-io/get-starknet": "^4.0.8"
+  }
+}
