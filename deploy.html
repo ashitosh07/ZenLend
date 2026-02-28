@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ZenLend Contract Deployer</title>
+    <!-- No external starknet.js needed — we use the wallet's injected account directly -->
+    <style>
+      body {
+        font-family: monospace;
+        background: #0d1117;
+        color: #e6edf3;
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #58a6ff;
+      }
+      button {
+        background: #238636;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 8px 4px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      button:disabled {
+        background: #444;
+        cursor: not-allowed;
+      }
+      button.secondary {
+        background: #1f6feb;
+      }
+      pre {
+        background: #161b22;
+        padding: 15px;
+        border-radius: 6px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        border: 1px solid #30363d;
+        font-size: 12px;
+        max-height: 250px;
+        overflow-y: auto;
+      }
+      .step {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 15px;
+        margin: 12px 0;
+      }
+      .step h3 {
+        margin: 0 0 10px;
+        color: #79c0ff;
+      }
+      .success {
+        color: #56d364;
+      }
+      .error {
+        color: #f85149;
+      }
+      .warning {
+        color: #e3b341;
+      }
+      input {
+        background: #0d1117;
+        color: #e6edf3;
+        border: 1px solid #30363d;
+        padding: 8px;
+        border-radius: 4px;
+        width: 100%;
+        margin: 4px 0;
+        font-family: monospace;
+        font-size: 13px;
+      }
+      label {
+        color: #8b949e;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🚀 ZenLend Contract Deployer</h1>
+    <p style="color: #8b949e">
+      Deploys PrivateUSD (PUSD) and PrivateBTCLending contracts to Starknet
+      Sepolia
+    </p>
+
+    <div class="step">
+      <h3>Step 1: Connect Braavos Wallet</h3>
+      <button id="btnConnect" onclick="connectWallet()">Connect Braavos</button>
+      <div id="walletStatus"></div>
+    </div>
+
+    <div class="step">
+      <h3>Step 2: Load Contract Artifacts</h3>
+      <p style="color: #8b949e; font-size: 13px">
+        Paste the contents of each JSON file from <code>target/dev/</code>
+      </p>
+
+      <label
+        >PrivateUSD Sierra (private_usd_PrivateUSD.contract_class.json):</label
+      >
+      <textarea
+        id="pusdSierra"
+        rows="3"
+        style="
+          width: 100%;
+          background: #0d1117;
+          color: #e6edf3;
+          border: 1px solid #30363d;
+          border-radius: 4px;
+          padding: 8px;
+          font-family: monospace;
+          font-size: 12px;
+        "
+        placeholder="Paste JSON here..."
+      ></textarea>
+
+      <label style="margin-top: 10px; display: block"
+        >PrivateUSD CASM
+        (private_usd_PrivateUSD.<b>compiled_contract_class</b>.json):</label
+      >
+      <textarea
+        id="pusdCasm"
+        rows="3"
+        style="
+          width: 100%;
+          background: #0d1117;
+          color: #e6edf3;
+          border: 1px solid #30363d;
+          border-radius: 4px;
+          padding: 8px;
+          font-family: monospace;
+          font-size: 12px;
+        "
+        placeholder="Paste CASM JSON here..."
+      ></textarea>
+
+      <label style="margin-top: 10px; display: block"
+        >PrivateBTCLending Sierra
+        (private_btc_lending_PrivateBTCLending.contract_class.json):</label
+      >
+      <textarea
+        id="lendingSierra"
+        rows="3"
+        style="
+          width: 100%;
+          background: #0d1117;
+          color: #e6edf3;
+          border: 1px solid #30363d;
+          border-radius: 4px;
+          padding: 8px;
+          font-family: monospace;
+          font-size: 12px;
+        "
+        placeholder="Paste JSON here..."
+      ></textarea>
+
+      <label style="margin-top: 10px; display: block"
+        >PrivateBTCLending CASM
+        (private_btc_lending_PrivateBTCLending.<b>compiled_contract_class</b>.json):</label
+      >
+      <textarea
+        id="lendingCasm"
+        rows="3"
+        style="
+          width: 100%;
+          background: #0d1117;
+          color: #e6edf3;
+          border: 1px solid #30363d;
+          border-radius: 4px;
+          padding: 8px;
+          font-family: monospace;
+          font-size: 12px;
+        "
+        placeholder="Paste CASM JSON here..."
+      ></textarea>
+
+      <br /><button class="secondary" onclick="loadArtifacts()">
+        Parse Artifacts
+      </button>
+      <div id="artifactStatus"></div>
+    </div>
+
+    <div class="step">
+      <h3>Step 3: Declare PrivateUSD Class</h3>
+      <button id="btnDeclPusd" onclick="declareContract('pusd')" disabled>
+        Declare PUSD
+      </button>
+      <div id="pusdDeclareStatus"></div>
+      <label id="pusdClassHashLabel"></label>
+    </div>
+
+    <div class="step">
+      <h3>Step 4: Deploy PrivateUSD Instance</h3>
+      <p style="color: #8b949e; font-size: 13px">
+        Constructor: owner address (your wallet address)
+      </p>
+      <button id="btnDeployPusd" onclick="deployContract('pusd')" disabled>
+        Deploy PUSD
+      </button>
+      <div id="pusdDeployStatus"></div>
+      <label id="pusdAddressLabel"></label>
+    </div>
+
+    <div class="step">
+      <h3>Step 5: Declare PrivateBTCLending Class</h3>
+      <button id="btnDeclLending" onclick="declareContract('lending')" disabled>
+        Declare Lending
+      </button>
+      <div id="lendingDeclareStatus"></div>
+      <label id="lendingClassHashLabel"></label>
+    </div>
+
+    <div class="step">
+      <h3>Step 6: Deploy PrivateBTCLending Instance</h3>
+      <p style="color: #8b949e; font-size: 13px">
+        Constructor: PUSD address, strkBTC address (use
+        <code
+          >0x07c0289d1415b8fd02e1c7523cf9a6e2e948bd37e2dae6c18d9e3b6f4fa4a8de</code
+        >
+        as mock strkBTC on Sepolia)
+      </p>
+      <label>PUSD Contract Address:</label>
+      <input id="pusdAddressInput" placeholder="0x..." />
+      <label>strkBTC Token Address:</label>
+      <input
+        id="strkBtcAddress"
+        value="0x07c0289d1415b8fd02e1c7523cf9a6e2e948bd37e2dae6c18d9e3b6f4fa4a8de"
+      />
+      <br /><button
+        id="btnDeployLending"
+        onclick="deployContract('lending')"
+        disabled
+      >
+        Deploy Lending
+      </button>
+      <div id="lendingDeployStatus"></div>
+      <label id="lendingAddressLabel"></label>
+    </div>
+
+    <div class="step">
+      <h3>📋 Deployment Summary</h3>
+      <pre id="summary">Waiting for deployment...</pre>
+    </div>
+
+    <script>
+      const RPC = 'https://api.cartridge.gg/x/starknet/sepolia'
+      let account = null
+      let walletAddr = null
+      let pusdSierra = null,
+        lendingSierra = null
+      // Both class hashes already declared on Sepolia
+      let pusdClassHash =
+          '0x003546e07e4149ffb2fcfbd4c37404d7001ce216959378e8412dd74041a8cc9e',
+        lendingClassHash =
+          '0x063d08572f95b0869e8e72fa13c4addf7935f487591cd6b1d38e9d061705055b'
+      let pusdAddress = null,
+        lendingAddress = null
+      let pusdCasm = null,
+        lendingCasm = null
+
+      async function connectWallet() {
+        try {
+          document.getElementById('walletStatus').innerHTML =
+            '<span class="warning">Connecting...</span>'
+          // Use Braavos injected wallet directly
+          const wallet = window.braavos_starknet || window.starknet
+          if (!wallet)
+            throw new Error(
+              'Braavos not detected — make sure extension is active and page loaded over HTTP',
+            )
+          await wallet.enable({ starknetVersion: 'v5' })
+          if (!wallet.isConnected) throw new Error('Wallet not connected')
+          walletAddr = wallet.selectedAddress
+          account = wallet.account // use wallet's own account+provider
+          document.getElementById('walletStatus').innerHTML =
+            `<span class="success">✓ Connected: ${walletAddr}</span>`
+          document.getElementById('btnDeclPusd').disabled = false
+          document.getElementById('pusdAddressInput').value = walletAddr
+          // Both classes already declared — enable all deploy buttons immediately
+          if (pusdClassHash) {
+            document.getElementById('btnDeployPusd').disabled = false
+            document.getElementById('btnDeclLending').disabled = false
+            document.getElementById('pusdClassHashLabel').innerHTML =
+              `<span class="success">Class Hash (pre-loaded): ${pusdClassHash}</span>`
+          }
+          if (lendingClassHash) {
+            document.getElementById('btnDeployLending').disabled = false
+            document.getElementById('lendingClassHashLabel').innerHTML =
+              `<span class="success">Class Hash (pre-loaded): ${lendingClassHash}</span>`
+          }
+        } catch (e) {
+          document.getElementById('walletStatus').innerHTML =
+            `<span class="error">✗ ${e.message}</span>`
+        }
+      }
+
+      function loadArtifacts() {
+        try {
+          pusdSierra = JSON.parse(
+            document.getElementById('pusdSierra').value.trim(),
+          )
+          pusdCasm = JSON.parse(
+            document.getElementById('pusdCasm').value.trim(),
+          )
+          lendingSierra = JSON.parse(
+            document.getElementById('lendingSierra').value.trim(),
+          )
+          lendingCasm = JSON.parse(
+            document.getElementById('lendingCasm').value.trim(),
+          )
+          document.getElementById('artifactStatus').innerHTML =
+            '<span class="success">✓ Artifacts loaded successfully (Sierra + CASM)</span>'
+          if (account) document.getElementById('btnDeclPusd').disabled = false
+        } catch (e) {
+          document.getElementById('artifactStatus').innerHTML =
+            `<span class="error">✗ JSON parse error: ${e.message}</span>`
+        }
+      }
+
+      async function declareContract(which) {
+        const btnId = which === 'pusd' ? 'btnDeclPusd' : 'btnDeclLending'
+        const statusId =
+          which === 'pusd' ? 'pusdDeclareStatus' : 'lendingDeclareStatus'
+        const labelId =
+          which === 'pusd' ? 'pusdClassHashLabel' : 'lendingClassHashLabel'
+        const sierra = which === 'pusd' ? pusdSierra : lendingSierra
+        const casm = which === 'pusd' ? pusdCasm : lendingCasm
+        const existingHash = which === 'pusd' ? pusdClassHash : lendingClassHash
+
+        // Already declared — skip wallet call entirely
+        if (existingHash) {
+          document.getElementById(statusId).innerHTML =
+            `<span class="success">✓ Already declared on Sepolia</span>`
+          document.getElementById(labelId).innerHTML =
+            `<span class="success">Class Hash: ${existingHash}</span>`
+          if (which === 'pusd') {
+            document.getElementById('btnDeployPusd').disabled = false
+            document.getElementById('btnDeclLending').disabled = false
+          } else {
+            document.getElementById('btnDeployLending').disabled = false
+          }
+          updateSummary()
+          return
+        }
+
+        if (!sierra || !casm) {
+          document.getElementById(statusId).innerHTML =
+            '<span class="error">Load artifacts first (need both Sierra + CASM)</span>'
+          return
+        }
+
+        document.getElementById(btnId).disabled = true
+        document.getElementById(statusId).innerHTML =
+          '<span class="warning">⏳ Declaring... (approve in Braavos)</span>'
+
+        try {
+          const declareResponse = await account.declare({
+            contract: sierra,
+            casm: casm,
+          })
+          document.getElementById(statusId).innerHTML =
+            `<span class="warning">⏳ Waiting for tx: ${declareResponse.transaction_hash}</span>`
+          await account.waitForTransaction(declareResponse.transaction_hash)
+
+          const classHash = declareResponse.class_hash
+          if (which === 'pusd') {
+            pusdClassHash = classHash
+            document.getElementById('btnDeployPusd').disabled = false
+            document.getElementById('btnDeclLending').disabled = false
+          } else {
+            lendingClassHash = classHash
+            document.getElementById('btnDeployLending').disabled = false
+          }
+          document.getElementById(statusId).innerHTML =
+            `<span class="success">✓ Declared!</span>`
+          document.getElementById(labelId).innerHTML =
+            `<span class="success">Class Hash: ${classHash}</span>`
+          updateSummary()
+        } catch (e) {
+          const msg = e.message || String(e)
+          if (
+            msg.includes('already declared') ||
+            msg.includes('CLASS_ALREADY_DECLARED')
+          ) {
+            // Extract class hash from error message
+            const extracted = msg.match(/0x[0-9a-fA-F]+/)?.[0]
+            if (which === 'pusd') {
+              pusdClassHash = extracted || pusdClassHash
+              document.getElementById('btnDeployPusd').disabled = false
+              document.getElementById('btnDeclLending').disabled = false
+            } else {
+              lendingClassHash = extracted || lendingClassHash
+              document.getElementById('btnDeployLending').disabled = false
+            }
+            document.getElementById(statusId).innerHTML =
+              `<span class="success">✓ Already declared</span>`
+            document.getElementById(labelId).innerHTML =
+              `<span class="success">Class Hash: ${extracted || '(set manually)'}</span>`
+            updateSummary()
+          } else {
+            document.getElementById(statusId).innerHTML =
+              `<span class="error">✗ ${msg}</span>`
+          }
+          document.getElementById(btnId).disabled = false
+        }
+      }
+
+      async function deployContract(which) {
+        const btnId = which === 'pusd' ? 'btnDeployPusd' : 'btnDeployLending'
+        const statusId =
+          which === 'pusd' ? 'pusdDeployStatus' : 'lendingDeployStatus'
+        const labelId =
+          which === 'pusd' ? 'pusdAddressLabel' : 'lendingAddressLabel'
+
+        document.getElementById(btnId).disabled = true
+
+        let classHash, constructorCalldata
+        if (which === 'pusd') {
+          classHash = pusdClassHash
+          if (!classHash) {
+            document.getElementById(statusId).innerHTML =
+              '<span class="error">Declare first</span>'
+            document.getElementById(btnId).disabled = false
+            return
+          }
+          constructorCalldata = [walletAddr] // owner
+        } else {
+          classHash = lendingClassHash
+          if (!classHash) {
+            document.getElementById(statusId).innerHTML =
+              '<span class="error">Declare first</span>'
+            document.getElementById(btnId).disabled = false
+            return
+          }
+          const pusdAddr = document
+            .getElementById('pusdAddressInput')
+            .value.trim()
+          const strkBtcAddr = document
+            .getElementById('strkBtcAddress')
+            .value.trim()
+          constructorCalldata = [pusdAddr, strkBtcAddr] // pusd_token_address, strkbtc_token_address
+        }
+
+        document.getElementById(statusId).innerHTML =
+          '<span class="warning">⏳ Deploying... (approve in Braavos)</span>'
+
+        try {
+          const deployResponse = await account.deployContract({
+            classHash,
+            constructorCalldata,
+          })
+          document.getElementById(statusId).innerHTML =
+            `<span class="warning">⏳ Waiting for tx: ${deployResponse.transaction_hash}</span>`
+          await account.waitForTransaction(deployResponse.transaction_hash)
+          const contractAddress = deployResponse.contract_address
+
+          if (which === 'pusd') {
+            pusdAddress = contractAddress
+            document.getElementById('pusdAddressInput').value = contractAddress
+          } else {
+            lendingAddress = contractAddress
+          }
+
+          document.getElementById(statusId).innerHTML =
+            `<span class="success">✓ Deployed!</span>`
+          document.getElementById(labelId).innerHTML =
+            `<span class="success">Address: ${contractAddress}</span>`
+          updateSummary()
+        } catch (e) {
+          document.getElementById(statusId).innerHTML =
+            `<span class="error">✗ ${e.message || String(e)}</span>`
+          document.getElementById(btnId).disabled = false
+        }
+      }
+
+      function updateSummary() {
+        document.getElementById('summary').textContent = JSON.stringify(
+          {
+            network: 'Starknet Sepolia',
+            rpc: RPC,
+            deployer: walletAddr,
+            PrivateUSD: {
+              class_hash: pusdClassHash || 'pending',
+              address: pusdAddress || 'pending',
+            },
+            PrivateBTCLending: {
+              class_hash: lendingClassHash || 'pending',
+              address: lendingAddress || 'pending',
+            },
+          },
+          null,
+          2,
+        )
+      }
+    </script>
+  </body>
+</html>
