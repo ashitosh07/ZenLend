@@ -14,9 +14,9 @@ The first **privacy-preserving** Bitcoin lending protocol on Starknet, purpose-b
 
 ## 🟢 Deployed Contracts — Starknet Sepolia
 
-| Contract | Address | Explorer |
-|---|---|---|
-| **PrivateUSD (PUSD)** | `0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611` | [Voyager](https://sepolia.voyager.online/contract/0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611) |
+| Contract              | Address                                                             | Explorer                                                                                                             |
+| --------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **PrivateUSD (PUSD)** | `0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611`  | [Voyager](https://sepolia.voyager.online/contract/0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611)  |
 | **PrivateBTCLending** | `0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8` | [Voyager](https://sepolia.voyager.online/contract/0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8) |
 
 **Network:** Starknet Sepolia — RPC: `https://api.cartridge.gg/x/starknet/sepolia`
@@ -53,26 +53,26 @@ Privacy is the institutional priority for 2026. Institutions will not use DeFi i
 
 ## Core Features
 
-| Feature | Description |
-|---|---|
-| **strkBTC Collateral** | Deposit Bitcoin without revealing amounts on-chain |
-| **Pedersen Commitments** | Same cryptographic primitives used by strkBTC itself |
-| **ZK Proof Generation** | Flask backend generates proofs; Cairo verifies on-chain |
-| **PUSD Minting** | Borrow stablecoins instantly against private collateral (150% min ratio) |
-| **Health Monitoring** | Real-time position health with live BTC price feed |
-| **Viewing Key Design** | Audit-friendly compliance model matching strkBTC |
+| Feature                  | Description                                                              |
+| ------------------------ | ------------------------------------------------------------------------ |
+| **strkBTC Collateral**   | Deposit Bitcoin without revealing amounts on-chain                       |
+| **Pedersen Commitments** | Same cryptographic primitives used by strkBTC itself                     |
+| **ZK Proof Generation**  | Flask backend generates proofs; Cairo verifies on-chain                  |
+| **PUSD Minting**         | Borrow stablecoins instantly against private collateral (150% min ratio) |
+| **Health Monitoring**    | Real-time position health with live BTC price feed                       |
+| **Viewing Key Design**   | Audit-friendly compliance model matching strkBTC                         |
 
 ---
 
 ## Competitive Positioning
 
-| Feature | StarkStorm | ZenLend |
-|---|---|---|
-| Privacy | No — all amounts visible | Yes — zero-knowledge hidden |
+| Feature         | StarkStorm                        | ZenLend                         |
+| --------------- | --------------------------------- | ------------------------------- |
+| Privacy         | No — all amounts visible          | Yes — zero-knowledge hidden     |
 | strkBTC support | No — not designed for private BTC | Yes — purpose-built for strkBTC |
-| Lending model | P2P coordination | Protocol-based instant lending |
-| Compliance | — | Yes — viewing key compatible |
-| Pricing | Static | Yes — live CoinGecko BTC feed |
+| Lending model   | P2P coordination                  | Protocol-based instant lending  |
+| Compliance      | —                                 | Yes — viewing key compatible    |
+| Pricing         | Static                            | Yes — live CoinGecko BTC feed   |
 
 ---
 
@@ -163,6 +163,51 @@ Verify both are running:
 
 ---
 
+## Deploy to Vercel
+
+Both the Flask backend and React frontend can be deployed as separate Vercel projects.
+
+### 1 — Deploy the Backend (Flask API)
+
+```bash
+cd commitments
+vercel deploy
+```
+
+After deployment note the URL (e.g. `https://zenlend-api.vercel.app`).
+
+> **Note:** `starknet-py` is a large dependency (~150 MB). If Vercel's 250 MB Lambda limit is hit, remove it from `requirements.txt` — it is only used for optional contract integration helpers, not the commitment API itself.
+
+### 2 — Deploy the Frontend (React)
+
+```bash
+cd frontend
+vercel deploy
+```
+
+Set the environment variable in the Vercel dashboard (or via CLI) before deploying:
+
+```bash
+vercel env add REACT_APP_API_URL
+# Enter your backend URL, e.g: https://zenlend-api.vercel.app
+```
+
+Then redeploy after setting the env var:
+
+```bash
+vercel deploy --prod
+```
+
+### Environment Variables
+
+| Project  | Variable            | Value                               |
+| -------- | ------------------- | ----------------------------------- |
+| Frontend | `REACT_APP_API_URL` | `https://<your-backend>.vercel.app` |
+
+For local dev, copy `frontend/.env.example` to `frontend/.env.local` and set `REACT_APP_API_URL=http://localhost:5000`.
+
+---
+
 ## Demo Flow
 
 1. **Landing page** — Hero section with strkBTC feature highlights
@@ -176,21 +221,22 @@ Verify both are running:
 
 ## Judge Q&A
 
-| Question | Answer |
-|---|---|
-| **"Is the ZK proof real?"** | Yes. Pedersen hash runs in the Flask backend — real cryptographic computation, not mocked. Visible in Chrome DevTools Network tab during the deposit step. |
-| **"Why not just use strkBTC directly for lending?"** | strkBTC hides wallet balances. ZenLend hides lending positions — collateral amount is invisible even to the protocol and on-chain observers. |
-| **"How does liquidation work if the amount is hidden?"** | The Cairo contract uses a ZK range proof to verify collateral >= debt x 1.5 without revealing the actual number. The commitment scheme allows this. |
-| **"Is this deployed on Starknet?"** | Yes — both contracts are live on Starknet Sepolia. PUSD: 0xa023bb6...c9611, PrivateBTCLending: 0x6cd464...635c8. Verify at sepolia.voyager.online. |
-| **"What's the BTC price source?"** | Live CoinGecko API, updating every 30 seconds. Visible in the navbar right now. |
-| **"How is the private key handled?"** | Goes only to your local Flask server on port 5000 — never touches an external server. In production it would be handled entirely client-side. |
-| **"What makes this different from other lending protocols?"** | Every other Starknet lending protocol exposes all position data on-chain. ZenLend is cryptographically private by design, not by trust. |
+| Question                                                      | Answer                                                                                                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **"Is the ZK proof real?"**                                   | Yes. Pedersen hash runs in the Flask backend — real cryptographic computation, not mocked. Visible in Chrome DevTools Network tab during the deposit step. |
+| **"Why not just use strkBTC directly for lending?"**          | strkBTC hides wallet balances. ZenLend hides lending positions — collateral amount is invisible even to the protocol and on-chain observers.               |
+| **"How does liquidation work if the amount is hidden?"**      | The Cairo contract uses a ZK range proof to verify collateral >= debt x 1.5 without revealing the actual number. The commitment scheme allows this.        |
+| **"Is this deployed on Starknet?"**                           | Yes — both contracts are live on Starknet Sepolia. PUSD: 0xa023bb6...c9611, PrivateBTCLending: 0x6cd464...635c8. Verify at sepolia.voyager.online.         |
+| **"What's the BTC price source?"**                            | Live CoinGecko API, updating every 30 seconds. Visible in the navbar right now.                                                                            |
+| **"How is the private key handled?"**                         | Goes only to your local Flask server on port 5000 — never touches an external server. In production it would be handled entirely client-side.              |
+| **"What makes this different from other lending protocols?"** | Every other Starknet lending protocol exposes all position data on-chain. ZenLend is cryptographically private by design, not by trust.                    |
 
 ---
 
 ## Emergency Fixes
 
 **Flask backend not running:**
+
 ```bash
 cd commitments && python app.py
 ```
@@ -198,6 +244,7 @@ cd commitments && python app.py
 **Deposit shows "Failed to generate ZK proof":** Flask is down — restart with command above.
 
 **Frontend not loading:**
+
 ```bash
 cd frontend && npm start
 ```
