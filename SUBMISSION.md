@@ -55,6 +55,10 @@ The strkBTC announcement is the inflection point. ZenLend is the first protocol 
 RPC: `https://api.cartridge.gg/x/starknet/sepolia`  
 Deployer: `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
 
+## Demo Video
+
+🎥 **[https://www.loom.com/share/c61eabd2d50544209c00befb04f35098](https://www.loom.com/share/c61eabd2d50544209c00befb04f35098)** (8 min)
+
 ## What's Next
 
 Integrate actual strkBTC token contract address, implement client-side commitment generation to remove the local backend dependency entirely, and add viewing key export for compliance use cases.

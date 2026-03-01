@@ -8,7 +8,7 @@
 > | PrivateUSD (PUSD) | `0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611` |
 > | PrivateBTCLending | `0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8` |
 >
-> [PUSD on Voyager](https://sepolia.voyager.online/contract/0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611) · [Lending on Voyager](https://sepolia.voyager.online/contract/0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8)
+> [PUSD on Voyager](https://sepolia.voyager.online/contract/0xa023bb6fda7d2753e8c6806b889c8b9a37b3c41784997bf24c6f2202cc9611) · [Lending on Voyager](https://sepolia.voyager.online/contract/0x6cd464fd97a0a48e203fff57bb4e550f50d92bd2903538dd639ed924f1635c8) · [🎥 Demo Video](https://www.loom.com/share/c61eabd2d50544209c00befb04f35098)
 
 ---
 

@@ -201,5 +201,13 @@ curl -X POST http://localhost:5000/generate-commitment \
 
 ---
 
+## Demo Video
+
+🎥 **[Watch the full demo on Loom](https://www.loom.com/share/c61eabd2d50544209c00befb04f35098)** (8 min)
+
+Covers: live Pedersen commitment generation, PUSD minting, position health monitor, and on-chain contract verification on Voyager.
+
+---
+
 **GitHub:** https://github.com/ashitosh07/ZenLend  
 **Starknet Wallet:** `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
