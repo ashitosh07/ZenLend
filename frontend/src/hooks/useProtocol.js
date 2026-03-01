@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { priceService } from '../services/priceService'
-import { CONTRACTS, voyagerContract } from '../constants'
+import { CONTRACTS } from '../constants'
 
 // Live Sepolia contract addresses
 export const LENDING_ADDRESS = CONTRACTS.LENDING.address
