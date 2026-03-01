@@ -29,13 +29,13 @@ python app.py
 ```bash
 cd frontend
 npm start
-# ✅ Expected: Compiled successfully on http://localhost:3001
+# ✅ Expected: Compiled successfully on http://localhost:3000
 ```
 
 Verify both are running by checking:
 
 - `http://localhost:5000/health` → `{ "status": "healthy" }`
-- `http://localhost:3001` → Landing page loads
+- `http://localhost:3000` → Landing page loads
 
 ---
 
