@@ -20,6 +20,12 @@ const DepositCollateral = ({ onDepositSuccess }) => {
       return
     }
 
+    const parsedAmount = parseFloat(amount)
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      setError('Please enter a valid amount greater than 0')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -27,7 +33,7 @@ const DepositCollateral = ({ onDepositSuccess }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: parseFloat(amount),
+          amount: parsedAmount,
           private_key: privateKey,
         }),
       })
@@ -69,12 +75,14 @@ const DepositCollateral = ({ onDepositSuccess }) => {
           <label>Amount</label>
           <div className='input-with-tag'>
             <input
-              type='number'
-              step='0.00000001'
-              min='0'
+              type='text'
+              inputMode='decimal'
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder='0.00000000'
+              onChange={(e) => {
+                const val = e.target.value
+                if (val === '' || /^\d*\.?\d*$/.test(val)) setAmount(val)
+              }}
+              placeholder='0.00'
               required
             />
             <span className='input-tag'>strkBTC</span>
