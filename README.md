@@ -24,10 +24,10 @@ The first **privacy-preserving** Bitcoin lending protocol on Starknet, purpose-b
 
 ## 🌐 Live Deployment
 
-| Service         | URL                                                         |
-| --------------- | ----------------------------------------------------------- |
-| **Frontend**    | https://frontend-g0s3xyx43-ashitoshs-projects.vercel.app    |
-| **Backend API** | https://commitments-g2qto4vox-ashitoshs-projects.vercel.app |
+| Service         | URL                                               |
+| --------------- | ------------------------------------------------- |
+| **Frontend**    | https://frontend-ashitoshs-projects.vercel.app    |
+| **Backend API** | https://commitments-ashitoshs-projects.vercel.app |
 
 ---
 
@@ -308,7 +308,7 @@ zenlend/
 ---
 
 **GitHub:** https://github.com/ashitosh07/ZenLend
-**Live App:** https://frontend-g0s3xyx43-ashitoshs-projects.vercel.app
+**Live App:** https://frontend-ashitoshs-projects.vercel.app
 **Starknet Wallet:** `0x02e534bcc1dabcd6daef55ab7a30c5ee953d4db2853d6a3613dc7b1b4d6ae4c7`
 
 _ZenLend — Built for Re{define} Hackathon 2026. Starknet's private Bitcoin era starts now._
